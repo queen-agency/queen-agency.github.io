@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://queen-agency.github.io/sitemap.xml
+Sitemap: https://www.xn--2q1b16p8rccuh9oa.com/sitemap.xml
