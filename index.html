@@ -223,6 +223,14 @@ h1 .goldtext{filter:drop-shadow(0 2px 18px rgba(200,162,74,.4))}
 .card .addr{font-size:13px;color:var(--mute)}
 .card .meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}
 .card .meta span{font-size:12.5px;color:var(--gray);background:#f7efe6;border-radius:3px;padding:4px 9px}
+
+/* 스펙 표 (면적/층/권리금/관리비) — 값이 있는 줄만 나옵니다 */
+.card .spec{margin-top:12px;padding-top:12px;border-top:1px dashed #ece5d8;display:flex;flex-direction:column;gap:6px}
+.srow{display:flex;align-items:baseline;gap:10px;font-size:13.5px;line-height:1.5}
+.sk{flex:none;width:52px;color:var(--mute);font-size:12.5px;letter-spacing:.02em}
+.sv{color:var(--ink);font-weight:600}
+.sv.free{color:#1c6b3f;font-weight:700}
+.badge-free{position:absolute;left:0;bottom:0;background:#1c6b3f;color:#eafaf0;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:0 4px 0 0;letter-spacing:.03em;z-index:2}
 .card .prices{margin-top:auto;border-top:1px solid #f0ece1;padding:14px 20px 18px;display:flex;flex-direction:column;gap:7px}
 .prow{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .pk{font-size:11.5px;font-weight:700;color:#fff;background:var(--wine);padding:4px 10px;border-radius:3px;letter-spacing:.04em;flex:none}
@@ -561,16 +569,25 @@ footer a:hover{color:var(--gold-lt)}
               ('전체'는 필터 버튼 전용이라 category 로 쓰면 안 됩니다)
    price    : '보증금 2,000 / 월 130만' 처럼 슬래시로 나누면 아래위 두 줄로 예쁘게 나옵니다
    img      : 실제 사진을 넣고 싶으면 'images/매물01.jpg' 처럼 적으세요. 비워두면 왕관 그림이 나옵니다
+
+   ── 2026-08-08 추가된 3칸 (몰라도 그냥 '' 로 비워두면 됩니다) ────────────
+   premium  : 권리금.  '무권리' / '협의' / '3,000만원' 처럼.  '' 이면 카드에 안 나옵니다
+   mgmt     : 관리비.  '15만원' / '별도' / '부가세 별도' 처럼. '' 이면 안 나옵니다
+   fl       : 층.      '1층 / 총 5층' / '지하 1층' / '3층' 처럼. '' 이면 안 나옵니다
+
+   ★ 비워둔 칸은 카드에 아예 안 나오니, 아는 것만 적으시면 됩니다.
+   ★ premium 에 '무권리' 라고 적으면 카드에 초록색으로 강조되고,
+     히어로 아래 '무권리 매물' 타일을 눌렀을 때도 이 매물이 걸립니다.
    ═══════════════════════════════════════════════════════ */
 const LISTINGS = [
-  { no:1001, category:'학원 임대', title:'한티역 5분 교습소 · 사무실',    address:'강남구 대치동 · 한티역 도보 5분',        price:'보증금 2,000 / 월 130만', area:'13평',     floor:'무권리',        note:'즉시입주',      img:'', photo:'매물 사진 01' },
-  { no:1002, category:'상가 임대', title:'대치사거리 42평 무권리 상가',    address:'강남구 대치동 · 대치사거리',            price:'보증금 3,000 / 월 200만', area:'42평',     floor:'무권리',        note:'체육업종 권장', img:'', photo:'매물 사진 02' },
-  { no:1003, category:'상가 임대', title:'한티역세권 1층 식당 (단독물건)', address:'강남구 대치동 · 한티역세권',            price:'보증금 1억 / 월 480만',   area:'1층 식당', floor:'단독물건',      note:'권리금 협의',   img:'', photo:'매물 사진 03' },
-  { no:1004, category:'상가 임대', title:'도곡초 옆 신축 상가 첫 입주',    address:'강남구 도곡동 · 도곡초 인접',           price:'조건 협의',               area:'신축',     floor:'1층',           note:'첫 입주',       img:'', photo:'매물 사진 04' },
-  { no:1005, category:'매매',      title:'(급) 양주 옥정지구 주택용지',    address:'경기 양주 옥정지구 · 1종 일반주거지역', price:'매매 6.9억',              area:'90평',     floor:'1종 일반주거', note:'급매',          img:'', photo:'매물 사진 05' },
-  { no:1006, category:'주거 임대', title:'최신식 풀옵션 원룸',            address:'강남구 대치동 · 한티역 인근',           price:'보증금 1,000 / 월 95만',  area:'풀옵션',   floor:'원룸',          note:'반전세 가능',   img:'', photo:'매물 사진 06' },
-  { no:1007, category:'주거 임대', title:'아파트형 구조 투룸 전세',        address:'강남구 대치동',                        price:'전세 3.3억',              area:'투룸',     floor:'아파트형 구조', note:'대출 가능',     img:'', photo:'매물 사진 07' },
-  { no:1008, category:'주거 임대', title:'한티역 5분 가성비 원룸',        address:'강남구 대치동 · 한티역 5분',            price:'보증금 1,000 / 월 75만',  area:'원룸',     floor:'월세',          note:'가성비',        img:'', photo:'매물 사진 08' }
+  { no:1001, category:'학원 임대', title:'한티역 5분 교습소 · 사무실',    address:'강남구 대치동 · 한티역 도보 5분',        price:'보증금 2,000 / 월 130만', area:'13평',     premium:'무권리',    mgmt:'별도',        fl:'',            floor:'',              note:'즉시입주',      img:'', photo:'매물 사진 01' },
+  { no:1002, category:'상가 임대', title:'대치사거리 42평 무권리 상가',    address:'강남구 대치동 · 대치사거리',            price:'보증금 3,000 / 월 200만', area:'42평',     premium:'무권리',    mgmt:'',            fl:'',            floor:'',              note:'체육업종 권장', img:'', photo:'매물 사진 02' },
+  { no:1003, category:'상가 임대', title:'한티역세권 1층 식당 (단독물건)', address:'강남구 대치동 · 한티역세권',            price:'보증금 1억 / 월 480만',   area:'1층 식당', premium:'협의',      mgmt:'',            fl:'1층',         floor:'단독물건',      note:'',              img:'', photo:'매물 사진 03' },
+  { no:1004, category:'상가 임대', title:'도곡초 옆 신축 상가 첫 입주',    address:'강남구 도곡동 · 도곡초 인접',           price:'조건 협의',               area:'',         premium:'무권리',    mgmt:'',            fl:'1층',         floor:'신축',          note:'첫 입주',       img:'', photo:'매물 사진 04' },
+  { no:1005, category:'매매',      title:'(급) 양주 옥정지구 주택용지',    address:'경기 양주 옥정지구 · 1종 일반주거지역', price:'매매 6.9억',              area:'90평',     premium:'',          mgmt:'',            fl:'',            floor:'1종 일반주거', note:'급매',          img:'', photo:'매물 사진 05' },
+  { no:1006, category:'주거 임대', title:'최신식 풀옵션 원룸',            address:'강남구 대치동 · 한티역 인근',           price:'보증금 1,000 / 월 95만',  area:'',         premium:'',          mgmt:'',            fl:'',            floor:'원룸 · 풀옵션', note:'반전세 가능',   img:'', photo:'매물 사진 06' },
+  { no:1007, category:'주거 임대', title:'아파트형 구조 투룸 전세',        address:'강남구 대치동',                        price:'전세 3.3억',              area:'',         premium:'',          mgmt:'',            fl:'',            floor:'투룸 · 아파트형', note:'대출 가능',   img:'', photo:'매물 사진 07' },
+  { no:1008, category:'주거 임대', title:'한티역 5분 가성비 원룸',        address:'강남구 대치동 · 한티역 5분',            price:'보증금 1,000 / 월 75만',  area:'',         premium:'',          mgmt:'',            fl:'',            floor:'원룸',          note:'가성비',        img:'', photo:'매물 사진 08' }
 ];
 
 const TABS  = ['전체','학원 임대','상가 임대','매매','주거 임대'];
@@ -659,8 +676,20 @@ function renderList(){
     const photo = i.img
       ? `<img src="${esc(i.img)}" alt="${esc(i.title)}" loading="lazy">`
       : `<div class="wm">♛</div><div class="lbl">${esc(i.photo)}</div>`;
-    const meta = [i.area, i.floor, i.note].filter(Boolean)
+    const meta = [i.floor, i.note].filter(Boolean)
       .map(v => `<span>${esc(v)}</span>`).join('');
+
+    /* 스펙 표 — 값이 있는 줄만 나옵니다. 비워두면 그 줄은 사라집니다. */
+    const noKey = /^무권리$/.test(String(i.premium || '').trim());
+    const spec = [
+      ['면적',   i.area],
+      ['층',     i.fl],
+      ['권리금', i.premium],
+      ['관리비', i.mgmt]
+    ].filter(([, v]) => v)
+     .map(([k, v]) => `<div class="srow"><span class="sk">${esc(k)}</span><span class="sv${(k === '권리금' && noKey) ? ' free' : ''}">${esc(v)}</span></div>`)
+     .join('');
+
     const prices = priceRows(i.price)
       .map(([k,v]) => `<div class="prow"><span class="pk">${esc(k)}</span><span class="pv">${esc(v)}</span></div>`).join('');
     return `
@@ -668,11 +697,13 @@ function renderList(){
       <div class="ph">${photo}
         <span class="tag">${esc(i.category)}</span>
         <span class="no">No. ${esc(i.no)}</span>
+        ${noKey ? '<span class="badge-free">무권리</span>' : ''}
       </div>
       <div class="body">
         <h3>${esc(i.title)}</h3>
         <div class="addr">${esc(i.address)}</div>
-        <div class="meta">${meta}</div>
+        ${meta ? `<div class="meta">${meta}</div>` : ''}
+        ${spec ? `<div class="spec">${spec}</div>` : ''}
       </div>
       <div class="prices">${prices}</div>
     </article>`;
