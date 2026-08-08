@@ -656,7 +656,7 @@ function priceRows(p){
 function filtered(){
   let items = LISTINGS;
   if(activeNo)  return items.filter(i => String(i.no).includes(activeNo));
-  if(activeKw)  items = items.filter(i => [i.title,i.floor,i.note,i.area,i.address].join(' ').includes(activeKw));
+  if(activeKw)  items = items.filter(i => [i.title,i.floor,i.note,i.area,i.address,i.premium,i.mgmt,i.fl].join(' ').includes(activeKw));
   if(activeTab !== '전체') items = items.filter(i => i.category === activeTab);
   return items;
 }
