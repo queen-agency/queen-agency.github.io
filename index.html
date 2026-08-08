@@ -216,6 +216,18 @@ h1 .goldtext{filter:drop-shadow(0 2px 18px rgba(200,162,74,.4))}
 .card .ph img{width:100%;height:100%;object-fit:cover}
 .card .ph .wm{font-size:36px;color:rgba(240,216,148,.55);line-height:1}
 .card .ph .lbl{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#dcbfc4;margin-top:9px;letter-spacing:.05em}
+
+/* ── 사진이 아직 없는 매물의 자리그림 ── */
+.phbox{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:repeating-linear-gradient(135deg,rgba(240,216,148,.05) 0 2px,transparent 2px 12px)}
+.phbox::after{content:'';position:absolute;inset:14px;border:1px solid rgba(240,216,148,.22);border-radius:3px;pointer-events:none}
+.phbox .phi{width:50px;height:50px;color:var(--gold-lt);opacity:.9}
+.phbox .phi svg{width:100%;height:100%;display:block}
+.phbox .phl{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:var(--gold-lt);letter-spacing:.03em}
+.phbox .phs{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;color:#d5b3ba;letter-spacing:.05em}
+#dlg .dph .phbox .phi{width:76px;height:76px}
+#dlg .dph .phbox .phl{font-size:20px}
+#dlg .dph .phbox .phs{font-size:12px}
 .card .tag{position:absolute;top:0;left:0;background:var(--goldgrad);color:#1a1405;font-size:11.5px;font-weight:700;padding:6px 14px;letter-spacing:.03em;border-radius:0 0 4px 0;z-index:2}
 .card .no{position:absolute;top:12px;right:12px;background:rgba(61,11,19,.88);color:var(--gold-lt);font-family:ui-monospace,Menlo,monospace;font-size:11px;padding:5px 10px;border-radius:3px;letter-spacing:.04em;z-index:2}
 .card .body{padding:20px 20px 0;display:flex;flex-direction:column;gap:8px;flex:1}
@@ -712,7 +724,7 @@ function renderList(){
   $('listGrid').innerHTML = items.map(i => {
     const photo = i.img
       ? `<img src="${esc(i.img)}" alt="${esc(i.title)}" loading="lazy">`
-      : `<div class="wm">♛</div><div class="lbl">${esc(i.photo)}</div>`;
+      : phBox(i);
     const meta = [i.floor, i.note].filter(Boolean)
       .map(v => `<span>${esc(v)}</span>`).join('');
 
@@ -769,6 +781,21 @@ function refresh(){ renderTiles(); renderTabs(); renderList(); }
    내용은 매물 목록의 desc 칸에 적으시면 됩니다.
    '■ 제목' 으로 시작하는 줄은 굵은 소제목으로 나옵니다.
    ═══════════════════════════════════════════════════════ */
+/* 사진이 없는 매물에 쓰는 자리그림 — 매물 종류별로 다른 그림이 나옵니다 */
+const PH_ICONS = {
+  '학원 임대':'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M24 7 5 15l19 8 19-8-19-8Z"/><path d="M13 19.5V29c0 3.3 4.9 6 11 6s11-2.7 11-6v-9.5"/><path d="M43 15v11"/></svg>',
+  '상가 임대':'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 9h32l4 11H4L8 9Z"/><path d="M8 20v19h32V20"/><path d="M19 39V27h10v12"/></svg>',
+  '매매':'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 41V7h20v34"/><path d="M31 18h7v23"/><path d="M5 41h38"/><path d="M17 14h8M17 21h8M17 28h8"/></svg>',
+  '주거 임대':'<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22 24 7l19 15"/><path d="M10 20v21h28V20"/><path d="M19 41V29h10v12"/></svg>'
+};
+function phBox(i){
+  return `<div class="phbox">
+    <div class="phi">${PH_ICONS[i.category] || PH_ICONS['매매']}</div>
+    <div class="phl">${esc(i.category)}</div>
+    <div class="phs">사진 준비 중 · No. ${esc(i.no)}</div>
+  </div>`;
+}
+
 function descHTML(t){
   return String(t || '').split('\n').map(line => {
     const s = line.trim();
@@ -781,7 +808,7 @@ function descHTML(t){
 function openDlg(no){
   const i = LISTINGS.find(x => String(x.no) === String(no));
   if(!i) return;
-  const photo = i.img ? `<img src="${esc(i.img)}" alt="${esc(i.title)}">` : `<div class="wm">♛</div>`;
+  const photo = i.img ? `<img src="${esc(i.img)}" alt="${esc(i.title)}">` : phBox(i);
   const cells = [
     ['가격',   priceRows(i.price).map(([k,v]) => k + ' ' + v).join('  /  ')],
     ['면적',   i.area],
